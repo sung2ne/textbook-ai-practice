@@ -1,29 +1,24 @@
-# 소설처럼 읽는 인공지능실습
+# 주제 9. 전이학습
 
-**PyTorch 2.x + Gradio** 실습 코드 저장소입니다.
+**소설처럼 읽는 인공지능실습** - PART 3. CNN 심화와 AI 앱 만들기 (9~11주)
 
-## 브랜치 구조
+## 실습 파일
 
-| 브랜치 | 주제 |
-|--------|------|
-| topic-01 | 주제 1. 개발 환경 설정 |
-| topic-02 | 주제 2. MNIST 분류 바로 실행 |
-| topic-03 | 주제 3. CNN으로 이미지 분류 |
-| topic-04 | 주제 4. 데이터 파이프라인 |
-| topic-05 | 주제 5. 데이터 증강과 커스텀 데이터셋 |
-| topic-06 | 주제 6. 성능 튜닝 |
-| topic-07 | 주제 7. CNN 심화 |
-| topic-08 | 주제 8. Gradio로 AI 앱 만들기 |
-| topic-09 | 주제 9. 전이학습 |
-| topic-10 | 주제 10. 모델 최적화 |
-| topic-11 | 주제 11. 프로젝트 완성 가이드 |
+- `topic_9_전이학습.py` - 이 주제의 모든 실습 코드
 
 ## 실행 방법
 
-각 브랜치를 선택하고 Google Colab에서 `.py` 파일을 열어 실행하세요.
+이 코드는 **Google Colab** 환경에서 실행하도록 설계되었습니다.
 
-## 교재 정보
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sung2ne/textbook-ai-practice/blob/topic-09/topic_9_전이학습.py)
 
-- 교재: 소설처럼 읽는 인공지능실습
-- 환경: Google Colab (무료 GPU 사용 가능)
-- 라이브러리: PyTorch 2.x, torchvision, Gradio
+## 섹션 구성
+
+- 01. 전이학습 개념
+- 02. ResNet 파인튜닝
+- 03. EfficientNet 파인튜닝
+
+## 참고
+
+- 교재: https://wikidocs.net/book/19214
+- 브랜치: `topic-09`
