@@ -127,38 +127,62 @@ model = CIFAR_CNN().to(device)
 total_params = sum(p.numel() for p in model.parameters())
 print(f"파라미터 수: {total_params:,}")
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
-
-EPOCHS = 20
-for epoch in range(1, EPOCHS + 1):
-    # 학습
+def train_epoch(model, loader, criterion, optimizer, device):
     model.train()
-    train_loss, train_correct = 0, 0
-    for images, labels in train_loader:
+    total_loss = 0
+    correct = 0
+    for images, labels in loader:
         images, labels = images.to(device), labels.to(device)
         optimizer.zero_grad()
         outputs = model(images)
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
-        train_loss += loss.item()
-        train_correct += outputs.max(1)[1].eq(labels).sum().item()
+        total_loss += loss.item()
+        _, predicted = outputs.max(1)
+        correct += predicted.eq(labels).sum().item()
+    avg_loss = total_loss / len(loader)
+    accuracy = correct / len(loader.dataset) * 100
+    return avg_loss, accuracy
 
-    # 평가
+
+def evaluate(model, loader, criterion, device):
     model.eval()
-    test_correct = 0
+    total_loss = 0
+    correct = 0
     with torch.no_grad():
-        for images, labels in test_loader:
+        for images, labels in loader:
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
-            test_correct += outputs.max(1)[1].eq(labels).sum().item()
+            loss = criterion(outputs, labels)
+            total_loss += loss.item()
+            _, predicted = outputs.max(1)
+            correct += predicted.eq(labels).sum().item()
+    avg_loss = total_loss / len(loader)
+    accuracy = correct / len(loader.dataset) * 100
+    return avg_loss, accuracy
+
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+EPOCHS = 20
+best_acc = 0
+
+for epoch in range(1, EPOCHS + 1):
+    train_loss, train_acc = train_epoch(model, train_loader, criterion, optimizer, device)
+    test_loss, test_acc = evaluate(model, test_loader, criterion, device)
 
     if epoch % 5 == 0:
-        train_acc = train_correct / len(train_dataset) * 100
-        test_acc  = test_correct  / len(test_dataset)  * 100
         print(f"Epoch {epoch:2d}/{EPOCHS} | "
-              f"Train Acc: {train_acc:.1f}% | Test Acc: {test_acc:.1f}%")
+              f"Train Loss: {train_loss:.4f} Acc: {train_acc:.1f}% | "
+              f"Test Loss: {test_loss:.4f} Acc: {test_acc:.1f}%")
+
+    if test_acc > best_acc:
+        best_acc = test_acc
+        torch.save(model.state_dict(), 'best_cifar_model.pth')
+
+print(f"\n최고 테스트 정확도: {best_acc:.2f}%")
 
 
 # ------------------------------------------------------------
