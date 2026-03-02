@@ -23,8 +23,8 @@ transform = transforms.Compose([
 train_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
 test_dataset  = datasets.MNIST(root='./data', train=False, download=True, transform=transform)
 
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-test_loader  = DataLoader(test_dataset,  batch_size=64, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True,  num_workers=2)
+test_loader  = DataLoader(test_dataset,  batch_size=64, shuffle=False, num_workers=2)
 
 # ② 모델 설계
 class SimpleNet(nn.Module):
@@ -39,7 +39,8 @@ class SimpleNet(nn.Module):
         x = x.view(-1, 784)  # 28×28 → 784 flatten
         x = self.relu(self.fc1(x))
         x = self.relu(self.fc2(x))
-        return self.fc3(x)
+        x = self.fc3(x)
+        return x
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = SimpleNet().to(device)
@@ -49,10 +50,11 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # ③ 학습 루프
-for epoch in range(5):
+def train_epoch(model, loader, criterion, optimizer, device):
     model.train()
     total_loss = 0
-    for images, labels in train_loader:
+    correct = 0
+    for images, labels in loader:
         images, labels = images.to(device), labels.to(device)
         optimizer.zero_grad()
         outputs = model(images)
@@ -60,19 +62,43 @@ for epoch in range(5):
         loss.backward()
         optimizer.step()
         total_loss += loss.item()
-    print(f"Epoch {epoch+1}/5 | Loss: {total_loss/len(train_loader):.4f}")
+        _, predicted = outputs.max(1)
+        correct += predicted.eq(labels).sum().item()
+    avg_loss = total_loss / len(loader)
+    accuracy = correct / len(loader.dataset) * 100
+    return avg_loss, accuracy
 
 # ④ 평가
-model.eval()
-correct = 0
-with torch.no_grad():
-    for images, labels in test_loader:
-        images, labels = images.to(device), labels.to(device)
-        outputs = model(images)
-        _, predicted = torch.max(outputs, 1)
-        correct += (predicted == labels).sum().item()
+def evaluate(model, loader, criterion, device):
+    model.eval()
+    total_loss = 0
+    correct = 0
+    with torch.no_grad():
+        for images, labels in loader:
+            images, labels = images.to(device), labels.to(device)
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+            total_loss += loss.item()
+            _, predicted = outputs.max(1)
+            correct += predicted.eq(labels).sum().item()
+    avg_loss = total_loss / len(loader)
+    accuracy = correct / len(loader.dataset) * 100
+    return avg_loss, accuracy
 
-print(f"\n테스트 정확도: {correct / len(test_dataset) * 100:.2f}%")
+EPOCHS = 5
+best_acc = 0
+
+for epoch in range(1, EPOCHS + 1):
+    train_loss, train_acc = train_epoch(model, train_loader, criterion, optimizer, device)
+    test_loss, test_acc = evaluate(model, test_loader, criterion, device)
+    print(f"Epoch {epoch}/{EPOCHS} | "
+          f"Train Loss: {train_loss:.4f} Acc: {train_acc:.2f}% | "
+          f"Test Loss: {test_loss:.4f} Acc: {test_acc:.2f}%")
+    if test_acc > best_acc:
+        best_acc = test_acc
+        torch.save(model.state_dict(), 'best_model.pth')
+
+print(f"\n최고 테스트 정확도: {best_acc:.2f}%")
 
 
 # ------------------------------------------------------------
