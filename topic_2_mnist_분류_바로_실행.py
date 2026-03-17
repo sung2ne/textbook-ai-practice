@@ -288,6 +288,23 @@ for epoch in range(1, EPOCHS + 1):
 
 print(f"\n최고 테스트 정확도: {best_acc:.2f}%")
 
+
+# ------------------------------------------------------------
+# 04-5. 예측 결과 시각화
+# ------------------------------------------------------------
+
+# Colab 한글 폰트 설정
+import subprocess
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+subprocess.run(['apt-get', '-qq', 'install', '-y', 'fonts-nanum'],
+               capture_output=True, check=True)
+
+fm.fontManager.addfont('/usr/share/fonts/truetype/nanum/NanumGothic.ttf')
+plt.rcParams['font.family'] = 'NanumGothic'
+plt.rcParams['axes.unicode_minus'] = False
+
 import matplotlib.pyplot as plt
 
 model.eval()
