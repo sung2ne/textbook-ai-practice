@@ -111,6 +111,18 @@ optimizer_adam = optim.Adam(
     weight_decay=1e-4
 )
 
+# Colab 한글 폰트 설정
+import subprocess
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+subprocess.run(['apt-get', '-qq', 'install', '-y', 'fonts-nanum'],
+               capture_output=True, check=True)
+
+fm.fontManager.addfont('/usr/share/fonts/truetype/nanum/NanumGothic.ttf')
+plt.rcParams['font.family'] = 'NanumGothic'
+plt.rcParams['axes.unicode_minus'] = False
+
 import matplotlib.pyplot as plt
 
 # 학습률별 손실 변화 시뮬레이션
