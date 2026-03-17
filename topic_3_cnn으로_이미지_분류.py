@@ -187,7 +187,19 @@ print(f"\n최고 테스트 정확도: {best_acc:.2f}%")
 # ------------------------------------------------------------
 # 03. 필터 시각화
 # ------------------------------------------------------------
+
+# Colab 한글 폰트 설정
+import subprocess
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+subprocess.run(['apt-get', '-qq', 'install', '-y', 'fonts-nanum'],
+               capture_output=True, check=True)
+
+fm.fontManager.addfont('/usr/share/fonts/truetype/nanum/NanumGothic.ttf')
+plt.rcParams['font.family'] = 'NanumGothic'
+plt.rcParams['axes.unicode_minus'] = False
+
 import numpy as np
 
 # 학습된 모델의 첫 번째 Conv 레이어 가중치
