@@ -173,10 +173,9 @@ for epoch in range(1, EPOCHS + 1):
     train_loss, train_acc = train_epoch(model, train_loader, criterion, optimizer, device)
     test_loss, test_acc = evaluate(model, test_loader, criterion, device)
 
-    if epoch % 5 == 0:
-        print(f"Epoch {epoch:2d}/{EPOCHS} | "
-              f"Train Loss: {train_loss:.4f} Acc: {train_acc:.1f}% | "
-              f"Test Loss: {test_loss:.4f} Acc: {test_acc:.1f}%")
+    print(f"Epoch {epoch:2d}/{EPOCHS} | "
+          f"Train Loss: {train_loss:.4f} Acc: {train_acc:.1f}% | "
+          f"Test Loss: {test_loss:.4f} Acc: {test_acc:.1f}%")
 
     if test_acc > best_acc:
         best_acc = test_acc
