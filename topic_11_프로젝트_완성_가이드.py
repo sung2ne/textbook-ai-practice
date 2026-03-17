@@ -96,6 +96,18 @@ def classify_safe(image):
 # ------------------------------------------------------------
 # 02. 발표 준비 가이드
 # ------------------------------------------------------------
+# Colab 한글 폰트 설정
+import subprocess
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+subprocess.run(['apt-get', '-qq', 'install', '-y', 'fonts-nanum'],
+               capture_output=True, check=True)
+
+fm.fontManager.addfont('/usr/share/fonts/truetype/nanum/NanumGothic.ttf')
+plt.rcParams['font.family'] = 'NanumGothic'
+plt.rcParams['axes.unicode_minus'] = False
+
 # 발표용 결과 정리 코드
 import matplotlib.pyplot as plt
 import numpy as np
