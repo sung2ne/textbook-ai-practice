@@ -43,6 +43,18 @@ test_transform = transforms.Compose([
                          std=[0.229, 0.224, 0.225])
 ])
 
+# Colab 한글 폰트 설정
+import subprocess
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+subprocess.run(['apt-get', '-qq', 'install', '-y', 'fonts-nanum'],
+               capture_output=True, check=True)
+
+fm.fontManager.addfont('/usr/share/fonts/truetype/nanum/NanumGothic.ttf')
+plt.rcParams['font.family'] = 'NanumGothic'
+plt.rcParams['axes.unicode_minus'] = False
+
 import matplotlib.pyplot as plt
 from PIL import Image
 import torch
