@@ -40,6 +40,18 @@ for epoch in range(EPOCHS):
     scheduler.step()  # 에포크마다 호출
     lr_history.append(optimizer.param_groups[0]['lr'])
 
+# Colab 한글 폰트 설정
+import subprocess
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+subprocess.run(['apt-get', '-qq', 'install', '-y', 'fonts-nanum'],
+               capture_output=True, check=True)
+
+fm.fontManager.addfont('/usr/share/fonts/truetype/nanum/NanumGothic.ttf')
+plt.rcParams['font.family'] = 'NanumGothic'
+plt.rcParams['axes.unicode_minus'] = False
+
 # 학습률 변화 시각화
 import matplotlib.pyplot as plt
 plt.plot(lr_history)
